@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 class Contact(
     @PrimaryKey var id : Int? = null,
-    var profile : Int? = null,
-    var name : String,
-    var phoneNo : String,
+    var profile : ByteArray? = null,
+    var name : String? = null,
+    var phoneNo : String? = null,
     var email : String? = null
 )
