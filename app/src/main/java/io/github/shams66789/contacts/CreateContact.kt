@@ -11,8 +11,10 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.ViewModelProvider
 import com.github.dhaval2404.imagepicker.ImagePicker
 import io.github.shams66789.contacts.databinding.ActivityCreateContactBinding
+import io.github.shams66789.contacts.mvvmarch.CreateContactViewModel
 import io.github.shams66789.contacts.roomdb.DbBuilder
 import io.github.shams66789.contacts.roomdb.entity.Contact
 
@@ -20,6 +22,7 @@ class CreateContact : AppCompatActivity() {
     private val binding by lazy {
         ActivityCreateContactBinding.inflate(layoutInflater)
     }
+    lateinit var viewModel : CreateContactViewModel
     var contact = Contact()
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -42,10 +45,11 @@ class CreateContact : AppCompatActivity() {
             }
         }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        viewModel = ViewModelProvider(this).get(CreateContactViewModel::class.java)
 
         binding.imageView.setOnLongClickListener {
             val dialog = Dialog(this)
@@ -54,12 +58,14 @@ class CreateContact : AppCompatActivity() {
             val image = dialog.findViewById<ImageView>(R.id.imageView2)
             val imageObject = binding.imageView.drawable
             image.setImageDrawable(imageObject)
-            val lp = WindowManager.LayoutParams()
-            lp.width = WindowManager.LayoutParams.WRAP_CONTENT
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-            lp.blurBehindRadius = 100
-            lp.flags = WindowManager.LayoutParams.FLAG_BLUR_BEHIND
-            dialog.window?.attributes = lp
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val lp = WindowManager.LayoutParams()
+                lp.width = WindowManager.LayoutParams.WRAP_CONTENT
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+                lp.blurBehindRadius = 100
+                lp.flags = WindowManager.LayoutParams.FLAG_BLUR_BEHIND
+                dialog.window?.attributes = lp
+            }
             dialog.show()
             true
         }
@@ -69,7 +75,15 @@ class CreateContact : AppCompatActivity() {
             contact.phoneNo =  binding.phone.editText?.text.toString()
             contact.email =  binding.email.editText?.text.toString()
 
-            DbBuilder.getdb(this)?.ContactDao()?.createContact(contact)
+            viewModel.storeData(contact) {
+                if (it != null) {
+                    if (it > 0) {
+                        Toast.makeText(this@CreateContact, "Contact Created", Toast.LENGTH_SHORT)
+                            .show()
+                        finish()
+                    }
+                }
+            }
         }
 
         binding.imageView.setOnClickListener {

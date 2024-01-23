@@ -1,5 +1,6 @@
 package io.github.shams66789.contacts.roomdb.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -12,13 +13,13 @@ import io.github.shams66789.contacts.roomdb.entity.Contact
 interface ContactDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun createContact(contact : Contact)
+    fun createContact(contact : Contact) : Long
 
     @Update
     fun updateContact(contact: Contact)
 
     @Query("SELECT * FROM CONTACT" )
-    fun readContact() : List<Contact>
+    fun readContact() : LiveData<List<Contact>>
 
     @Query("SELECT * FROM CONTACT WHERE ID = :id1" )
     fun readContact(id1 : Int) : Contact
