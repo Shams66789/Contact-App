@@ -2,9 +2,11 @@ package io.github.shams66789.contacts
 
 import android.app.Activity
 import android.app.Dialog
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
@@ -24,6 +26,8 @@ class CreateContact : AppCompatActivity() {
     }
     lateinit var viewModel : CreateContactViewModel
     var contact = Contact()
+    var flag = -1
+
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             val resultCode = result.resultCode
@@ -32,7 +36,6 @@ class CreateContact : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 //Image Uri will not be null for RESULT_OK
                 val fileUri = data?.data!!
-
 
                 binding.imageView.setImageURI(fileUri)
 
@@ -50,6 +53,24 @@ class CreateContact : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this).get(CreateContactViewModel::class.java)
+
+        if (intent.hasExtra("FLAG", )) {
+            flag = intent.getIntExtra("FLAG", -1)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                contact = intent.getSerializableExtra("DATA", Contact::class.java)!!
+            } else {
+                contact = intent.getSerializableExtra("DATA") as Contact
+            }
+            binding.button.text = "Update Contact"
+            val imageByte = contact.profile
+            if (imageByte != null) {
+                val image = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.size)
+                binding.imageView.setImageBitmap(image)
+            }
+            binding.name.editText?.setText(contact.name)
+            binding.phone.editText?.setText(contact.phoneNo)
+            binding.email.editText?.setText(contact.email)
+        }
 
         binding.imageView.setOnLongClickListener {
             val dialog = Dialog(this)
@@ -75,12 +96,24 @@ class CreateContact : AppCompatActivity() {
             contact.phoneNo =  binding.phone.editText?.text.toString()
             contact.email =  binding.email.editText?.text.toString()
 
-            viewModel.storeData(contact) {
-                if (it != null) {
-                    if (it > 0) {
-                        Toast.makeText(this@CreateContact, "Contact Created", Toast.LENGTH_SHORT)
-                            .show()
-                        finish()
+            if (flag == 1) {
+                viewModel.updateData(contact) {
+                    if (it != null) {
+                        if (it > 0) {
+                            Toast.makeText(this@CreateContact, "Contact Updated", Toast.LENGTH_SHORT)
+                                .show()
+                            finish()
+                        }
+                    }
+                }
+            } else{
+                viewModel.storeData(contact) {
+                    if (it != null) {
+                        if (it > 0) {
+                            Toast.makeText(this@CreateContact, "Contact Created", Toast.LENGTH_SHORT)
+                                .show()
+                            finish()
+                        }
                     }
                 }
             }

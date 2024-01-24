@@ -1,10 +1,15 @@
 package io.github.shams66789.contacts
 
+import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import io.github.shams66789.contacts.databinding.ContactItemsBinding
 import io.github.shams66789.contacts.roomdb.entity.Contact
@@ -60,6 +65,30 @@ class ContactAdapter(var contactList: List<Contact>, var context : Context) : Re
         holder.binding.name.text = contact.name
         holder.binding.phone.text = contact.phoneNo
         holder.binding.email.text = contact.email
+
+        holder.itemView.setOnClickListener {
+            context.startActivity(Intent(context, CreateContact::class.java)
+                .putExtra("FLAG", 1)
+                .putExtra("DATA", contact))
+        }
+
+        holder.binding.signImage.setOnClickListener {
+            val dialog = Dialog(context)
+            dialog.setContentView(R.layout.image_dialog)
+
+            val image = dialog.findViewById<ImageView>(R.id.imageView2)
+            val imageObject = holder.binding.signImage.drawable
+            image.setImageDrawable(imageObject)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val lp = WindowManager.LayoutParams()
+                lp.width = WindowManager.LayoutParams.WRAP_CONTENT
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+                lp.blurBehindRadius = 100
+                lp.flags = WindowManager.LayoutParams.FLAG_BLUR_BEHIND
+                dialog.window?.attributes = lp
+            }
+            dialog.show()
+        }
     }
 
 }

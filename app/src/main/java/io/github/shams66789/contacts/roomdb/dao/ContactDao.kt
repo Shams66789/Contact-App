@@ -12,11 +12,11 @@ import io.github.shams66789.contacts.roomdb.entity.Contact
 @Dao
 interface ContactDao {
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun createContact(contact : Contact) : Long
 
     @Update
-    fun updateContact(contact: Contact)
+    fun updateContact(contact: Contact) : Int
 
     @Query("SELECT * FROM CONTACT" )
     fun readContact() : LiveData<List<Contact>>

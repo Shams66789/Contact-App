@@ -15,4 +15,8 @@ class CreateContactViewModel(application: Application) : AndroidViewModel(applic
         val i = repo.createData(contact)
         function(i)
     }
+
+    fun updateData(contact: Contact, function: (i: Int?) -> Unit){
+        function(repo.updateData(contact))
+    }
 }

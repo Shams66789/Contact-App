@@ -2,6 +2,7 @@ package io.github.shams66789.contacts.roomdb.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity
 class Contact(
@@ -10,4 +11,4 @@ class Contact(
     var name : String? = null,
     var phoneNo : String? = null,
     var email : String? = null
-)
+): Serializable

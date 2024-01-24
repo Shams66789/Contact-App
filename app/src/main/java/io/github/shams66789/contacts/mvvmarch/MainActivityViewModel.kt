@@ -12,4 +12,8 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         repo= Repo(application)
         data = repo.getData()!!
     }
+
+    fun deleteData(contact: Contact) {
+        repo.deleteData(contact)
+    }
 }

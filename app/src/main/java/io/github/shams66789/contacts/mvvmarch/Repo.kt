@@ -25,8 +25,8 @@ class Repo(context: Context) {
         return database?.ContactDao()?.createContact(contact)
     }
 
-    fun updateData(contact: Contact) {
-        database?.ContactDao()?.updateContact(contact)
+    fun updateData(contact: Contact) : Int? {
+        return database?.ContactDao()?.updateContact(contact)
     }
 
 }
