@@ -121,11 +121,11 @@ class CreateContact : AppCompatActivity() {
 
         binding.imageView.setOnClickListener {
             ImagePicker.with(this)
+                .compress(1024)
+                .maxResultSize(1080, 1080)
                 .createIntent { intent ->
                     startForProfileImageResult.launch(intent)
                 }
         }
-
-
     }
 }

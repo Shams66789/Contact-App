@@ -1,10 +1,15 @@
 package io.github.shams66789.contacts
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextWatcher
+import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -24,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     var viewModel: MainActivityViewModel? = null
     var contactList = ArrayList<Contact>()
     lateinit var adapter : ContactAdapter
-    private val CALL_PERMISSION_REQUEST_CODE = 1
     var callingNo : Long? = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         }
 
-        var itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
             1,
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         ) {
@@ -80,19 +84,52 @@ class MainActivity : AppCompatActivity() {
         binding.rv.layoutManager = LinearLayoutManager(this)
         adapter = ContactAdapter(contactList, this)
         binding.rv.adapter = adapter
+
+        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText == null) {
+                    adapter.contactList = contactList
+                    adapter.notifyDataSetChanged()
+                } else {
+                    if (newText.length == 0 || newText.isNullOrEmpty() ||
+                        newText.isNullOrBlank()) {
+                        adapter.contactList = contactList
+                        adapter.notifyDataSetChanged()
+                    } else {
+                        var tempList = ArrayList<Contact>()
+                        contactList.forEach{
+                            if (it.name != null) {
+                                if (it.name!!.contains(newText) ||
+                                    it.phoneNo!!.contains(newText)) {
+                                    tempList.add(it)
+                                }
+                            }
+                        }
+                        adapter.contactList = tempList
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+                return true
+            }
+
+        })
     }
 
     fun isCallPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
             this,
-            android.Manifest.permission.CALL_PHONE
+            Manifest.permission.CALL_PHONE
         ) == PackageManager.PERMISSION_GRANTED
     }
 
     fun requestCallPermission() {
         ActivityCompat.requestPermissions(
             this,
-            arrayOf(android.Manifest.permission.CALL_PHONE),
+            arrayOf(Manifest.permission.CALL_PHONE),
             CALL_PERMISSION_REQUEST_CODE
         )
     }
