@@ -76,7 +76,7 @@
         style="@style/Widget.Material3.Button.OutlinedButton"
         app:rippleColor="#E2A1E6A4"
         android:layout_marginTop="30dp"
-        android:textColor="@color/black"
+        android:textColor="#6C74A5"
         android:text="Create Contact" />
 
 

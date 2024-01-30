@@ -11,9 +11,11 @@
         android:id="@+id/rv"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@+id/searchBar" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -22,34 +24,51 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="48dp"
-        app:rippleColor="#C151A7CD"
+        app:rippleColor="#C1174153"
         android:clickable="true"
+        app:backgroundTint="#E86FB3E8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add" />
 
-<!--    <com.google.android.material.search.SearchBar-->
-<!--        android:id="@+id/searchBar"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_margin="10dp"-->
-<!--        android:hint="Search"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchBar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/search_view_bg"
-        app:defaultQueryHint="Search"
         android:backgroundTint="#7EEAE4E4"
+        app:defaultQueryHint="Search"
         app:iconifiedByDefault="false"
+        app:layout_constraintEnd_toStartOf="@+id/dial_pad"
+        app:layout_constraintHorizontal_bias="0.125"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dial_pad"
+        app:queryBackground="@android:color/transparent" />
+
+    <ImageView
+        android:id="@+id/empty_img"
+        android:layout_width="179dp"
+        android:layout_height="139dp"
+        android:src="@drawable/empty_contact"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/dial_pad"
+        android:layout_width="47dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/search_view_bg"
+        android:backgroundTint="#E86FB3E8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/dialpad" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

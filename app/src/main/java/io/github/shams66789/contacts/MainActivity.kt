@@ -1,17 +1,16 @@
 package io.github.shams66789.contacts
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.TextWatcher
-import android.util.Log
-import android.widget.Toast
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,15 +28,19 @@ class MainActivity : AppCompatActivity() {
     var viewModel: MainActivityViewModel? = null
     var contactList = ArrayList<Contact>()
     lateinit var adapter : ContactAdapter
-    var callingNo : Long? = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
+        updateEmptyListVisibility()
 
         binding.floatingActionButton.setOnClickListener {
             startActivity(Intent(this@MainActivity, CreateContact::class.java))
+        }
+
+        binding.dialPad.setOnClickListener {
+            startActivity(Intent(this@MainActivity,DialActivity::class.java))
         }
 
         viewModel!!.data.observeForever{
@@ -46,11 +49,12 @@ class MainActivity : AppCompatActivity() {
                 contactList.add(it)
             }
             adapter.notifyDataSetChanged()
+            updateEmptyListVisibility()
         }
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
             1,
-            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            ItemTouchHelper.LEFT
         ) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -63,19 +67,7 @@ class MainActivity : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder,
                                   direction: Int) {
                 if (ItemTouchHelper.LEFT == direction) {
-                    viewModel!!.deleteData(contactList
-                        .get(viewHolder.adapterPosition))
-                } else {
-                    callingNo = contactList
-                        .get(viewHolder.adapterPosition)
-                        .phoneNo?.toLong()
-
-                    if (isCallPermissionGranted()) {
-                        makePhoneCall()
-                    } else {
-                        requestCallPermission()
-                    }
-                    adapter.notifyDataSetChanged()
+                    showDeleteConfirmationDialog(viewHolder.adapterPosition)
                 }
             }
 
@@ -91,66 +83,49 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText == null) {
-                    adapter.contactList = contactList
-                    adapter.notifyDataSetChanged()
-                } else {
-                    if (newText.length == 0 || newText.isNullOrEmpty() ||
-                        newText.isNullOrBlank()) {
-                        adapter.contactList = contactList
-                        adapter.notifyDataSetChanged()
-                    } else {
-                        var tempList = ArrayList<Contact>()
-                        contactList.forEach{
-                            if (it.name != null) {
-                                if (it.name!!.contains(newText) ||
-                                    it.phoneNo!!.contains(newText)) {
-                                    tempList.add(it)
-                                }
-                            }
-                        }
-                        adapter.contactList = tempList
-                        adapter.notifyDataSetChanged()
-                    }
-                }
+                filterContacts(newText)
                 return true
             }
-
         })
     }
 
-    fun isCallPermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.CALL_PHONE
-        ) == PackageManager.PERMISSION_GRANTED
-    }
+    fun showDeleteConfirmationDialog(position: Int) {
+        val alertDialogBuilder = AlertDialog.Builder(this@MainActivity)
 
-    fun requestCallPermission() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.CALL_PHONE),
-            CALL_PERMISSION_REQUEST_CODE
-        )
-    }
+        alertDialogBuilder.setTitle("Delete Confirmation")
+        alertDialogBuilder.setMessage("Are you sure you want to delete this Contact?")
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CALL_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                makePhoneCall()
+        alertDialogBuilder.setPositiveButton("Yes") { _, _ ->
+            viewModel?.deleteData(contactList[position])
+        }
+
+        alertDialogBuilder.setNegativeButton("No") { _, _ ->
+            adapter.notifyDataSetChanged()
+        }
+
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+    fun filterContacts(query: String?) {
+        val tempList = if (query.isNullOrBlank()) {
+            contactList
+        } else {
+            contactList.filter {
+                it.name?.contains(query, ignoreCase = true) == true ||
+                        it.phoneNo?.contains(query, ignoreCase = true) == true
             }
         }
+        adapter.contactList = ArrayList(tempList)
+        adapter.notifyDataSetChanged()
     }
 
-
-    fun makePhoneCall() {
-        val intent = Intent(Intent.ACTION_CALL)
-        intent.data = Uri.parse("tel:$callingNo")
-        startActivity(intent)
+    fun updateEmptyListVisibility() {
+        if (binding.rv.adapter?.itemCount == 0) {
+            binding.emptyImg.visibility = View.VISIBLE
+            binding.rv.visibility = View.GONE
+        } else {
+            binding.emptyImg.visibility = View.GONE
+            binding.rv.visibility = View.VISIBLE
+        }
     }
 }

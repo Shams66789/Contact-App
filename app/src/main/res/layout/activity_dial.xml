@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DialActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv1"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/second_view"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/contact_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="20dp">
+
+            <ImageView
+                android:id="@+id/contact_image"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_user" />
+
+            <TextView
+                android:id="@+id/contact_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Create a new Contact"
+                android:textColor="#438FCC"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="170dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/editTextPhone"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:gravity="center"
+        android:textSize="40sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="60dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/editTextPhone"
+        app:layout_constraintTop_toTopOf="@+id/editTextPhone"
+        app:srcCompat="@drawable/delete" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button12"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="7"
+        tools:layout_editor_absoluteX="161dp"
+        tools:layout_editor_absoluteY="226dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button14"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="2"
+        tools:layout_editor_absoluteX="-293dp"
+        tools:layout_editor_absoluteY="89dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button15"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="3"
+        tools:layout_editor_absoluteX="-202dp"
+        tools:layout_editor_absoluteY="89dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button11"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="4"
+        tools:layout_editor_absoluteX="-111dp"
+        tools:layout_editor_absoluteY="89dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button9"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="5"
+        tools:layout_editor_absoluteX="-21dp"
+        tools:layout_editor_absoluteY="89dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button13"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="6"
+        tools:layout_editor_absoluteX="70dp"
+        tools:layout_editor_absoluteY="89dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button6"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="8"
+        tools:layout_editor_absoluteX="251dp"
+        tools:layout_editor_absoluteY="89dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="9"
+        tools:layout_editor_absoluteX="341dp"
+        tools:layout_editor_absoluteY="55dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="+"
+        tools:layout_editor_absoluteX="432dp"
+        tools:layout_editor_absoluteY="89dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="0"
+        tools:layout_editor_absoluteX="523dp"
+        tools:layout_editor_absoluteY="89dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button10"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="#"
+        tools:layout_editor_absoluteX="614dp"
+        tools:layout_editor_absoluteY="89dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button8"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:backgroundTint="#C3BFBF"
+        android:textColor="@color/black"
+        app:cornerRadius="200dp"
+        android:textSize="27sp"
+        app:rippleColor="#929EDF"
+        android:text="1"
+        tools:layout_editor_absoluteX="-383dp"
+        tools:layout_editor_absoluteY="89dp" />
+
+    <ImageView
+        android:id="@+id/imageButton4"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:clickable="true"
+        android:backgroundTint="@color/white"
+        app:srcCompat="@drawable/phone1" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:constraint_referenced_ids="button8,button14,button15,button11,button9,button13,button12,button6,button4,button5,button3,button10,imageButton4"
+        app:flow_maxElementsWrap="3"
+        app:flow_wrapMode="chain"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPhone">
+
+    </androidx.constraintlayout.helper.widget.Flow>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

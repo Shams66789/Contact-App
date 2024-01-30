@@ -18,7 +18,7 @@ interface ContactDao {
     @Update
     fun updateContact(contact: Contact) : Int
 
-    @Query("SELECT * FROM CONTACT" )
+    @Query("SELECT * FROM CONTACT ORDER BY NAME ASC" )
     fun readContact() : LiveData<List<Contact>>
 
     @Query("SELECT * FROM CONTACT WHERE ID = :id1" )

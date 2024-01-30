@@ -1,21 +1,29 @@
 package io.github.shams66789.contacts
 
+import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.github.shams66789.contacts.databinding.ContactItemsBinding
 import io.github.shams66789.contacts.roomdb.entity.Contact
 
 
-class ContactAdapter(var contactList: List<Contact>, var context : Context) : RecyclerView.Adapter<ContactAdapter.MyViewHolder>() {
+class ContactAdapter(var contactList: List<Contact>, var context : Context) : RecyclerView
+    .Adapter<ContactAdapter.MyViewHolder>() {
+
+    var callingNo : Long? = 0
 
     inner class MyViewHolder(var binding: ContactItemsBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -64,12 +72,21 @@ class ContactAdapter(var contactList: List<Contact>, var context : Context) : Re
 
         holder.binding.name.text = contact.name
         holder.binding.phone.text = contact.phoneNo
-        holder.binding.email.text = contact.email
+//        holder.binding.email.text = contact.email
 
         holder.itemView.setOnClickListener {
             context.startActivity(Intent(context, CreateContact::class.java)
                 .putExtra("FLAG", 1)
                 .putExtra("DATA", contact))
+        }
+
+        holder.binding.call.setOnClickListener {
+            callingNo = contact.phoneNo?.toLong()
+            if (isCallPermissionGranted()) {
+                makePhoneCall()
+            } else {
+                requestCallPermission()
+            }
         }
 
         holder.binding.signImage.setOnClickListener {
@@ -91,4 +108,28 @@ class ContactAdapter(var contactList: List<Contact>, var context : Context) : Re
         }
     }
 
+
+
+    fun isCallPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.CALL_PHONE
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun requestCallPermission() {
+        ActivityCompat.requestPermissions(
+            context as MainActivity,
+            arrayOf(Manifest.permission.CALL_PHONE),
+            CALL_PERMISSION_REQUEST_CODE
+
+        )
+    }
+
+    private fun makePhoneCall() {
+        val intent = Intent(Intent.ACTION_CALL)
+        intent.data = Uri.parse("tel:$callingNo")
+        context.startActivity(intent)
+
+    }
 }
