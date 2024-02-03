@@ -13,14 +13,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.github.shams66789.contacts.databinding.ContactItemsBinding
 import io.github.shams66789.contacts.roomdb.entity.Contact
 
+interface PermissionCallback {
+    fun isCallPermissionGranted(): Boolean
+    fun requestCallPermission(position: Int)
+}
 
-class ContactAdapter(var contactList: List<Contact>, var context : Context) : RecyclerView
+class ContactAdapter(var contactList: List<Contact>, var context : Context, var permissionCallback: PermissionCallback) : RecyclerView
     .Adapter<ContactAdapter.MyViewHolder>() {
 
     var callingNo : Long? = 0
@@ -81,11 +86,12 @@ class ContactAdapter(var contactList: List<Contact>, var context : Context) : Re
         }
 
         holder.binding.call.setOnClickListener {
-            callingNo = contact.phoneNo?.toLong()
-            if (isCallPermissionGranted()) {
+            callingNo = contactList[position].phoneNo?.toLong()
+            if (permissionCallback.isCallPermissionGranted()) {
                 makePhoneCall()
             } else {
-                requestCallPermission()
+                // Request permission through the callback
+                permissionCallback.requestCallPermission(position)
             }
         }
 
@@ -108,28 +114,9 @@ class ContactAdapter(var contactList: List<Contact>, var context : Context) : Re
         }
     }
 
-
-
-    fun isCallPermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.CALL_PHONE
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    fun requestCallPermission() {
-        ActivityCompat.requestPermissions(
-            context as MainActivity,
-            arrayOf(Manifest.permission.CALL_PHONE),
-            CALL_PERMISSION_REQUEST_CODE
-
-        )
-    }
-
-    private fun makePhoneCall() {
+    fun makePhoneCall() {
         val intent = Intent(Intent.ACTION_CALL)
         intent.data = Uri.parse("tel:$callingNo")
         context.startActivity(intent)
-
     }
 }

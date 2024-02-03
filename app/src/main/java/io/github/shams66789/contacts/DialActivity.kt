@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -16,7 +17,7 @@ import io.github.shams66789.contacts.databinding.ActivityDialBinding
 import io.github.shams66789.contacts.mvvmarch.MainActivityViewModel
 import io.github.shams66789.contacts.roomdb.entity.Contact
 
-class DialActivity : AppCompatActivity() {
+class DialActivity : AppCompatActivity(), PermissionCallback  {
     private val binding by lazy {
         ActivityDialBinding.inflate(layoutInflater)
     }
@@ -26,6 +27,8 @@ class DialActivity : AppCompatActivity() {
     var contactList = ArrayList<Contact>()
     lateinit var adapter : ContactAdapter
     lateinit var text : String
+    private var positionOfPermissionRequest: Int = -1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,17 +45,13 @@ class DialActivity : AppCompatActivity() {
         }
 
         binding.rv1.layoutManager = LinearLayoutManager(this)
-        adapter = ContactAdapter(contactList, this)
+        adapter = ContactAdapter(contactList, this, this)
         binding.rv1.adapter = adapter
 
         binding.contactItem.setOnClickListener {
-            if (text.isEmpty()) {
-                startActivity(Intent(this, CreateContact::class.java))
-            } else {
-                startActivity(Intent(this, CreateContact::class.java)
-                    .putExtra("FLAG", 2)
-                    .putExtra("STRING", text))
-            }
+            startActivity(Intent(this, CreateContact::class.java)
+                .putExtra("FLAG", 2)
+                .putExtra("STRING", text))
         }
 
         binding.button10.setOnClickListener {
@@ -127,9 +126,9 @@ class DialActivity : AppCompatActivity() {
                 Toast.makeText(this, "Enter a Number before Calling", Toast.LENGTH_SHORT).show()
             } else {
                 if (isCallPermissionGranted()) {
-                    makePhoneCall(text)
+                    makePhoneCall()
                 } else {
-                    requestCallPermission()
+                    requestCallPermission(-1)
                 }
             }
         }
@@ -142,28 +141,64 @@ class DialActivity : AppCompatActivity() {
         filterContacts(text)
     }
 
-    fun isCallPermissionGranted(): Boolean {
+    override fun isCallPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
             this,
             Manifest.permission.CALL_PHONE
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    fun requestCallPermission() {
+    override fun requestCallPermission(position: Int) {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(Manifest.permission.CALL_PHONE),
             CALL_PERMISSION_REQUEST_CODE
-
         )
+        positionOfPermissionRequest = position
     }
 
-    private fun makePhoneCall(text : String) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == CALL_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (positionOfPermissionRequest == -1) {
+                    makePhoneCall()
+                }else {
+                    makePhoneCall(positionOfPermissionRequest)
+                }
+            } else {
+                Toast.makeText(this, "Permission denied. You can grant the permission in the app settings.",
+                    Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun makePhoneCall() {
         val num = text.toLong()
         val intent = Intent(Intent.ACTION_CALL)
         intent.data = Uri.parse("tel:$num")
         this.startActivity(intent)
+    }
 
+    private fun makePhoneCall(position: Int){
+        if (position != -1) {
+            val contact = contactList[position]
+            val phoneNo = contact.phoneNo
+            if (!phoneNo.isNullOrBlank()) {
+                val intent = Intent(Intent.ACTION_CALL)
+                intent.data = Uri.parse("tel:$phoneNo")
+                this.startActivity(intent)
+            } else {
+                Toast.makeText(this, "Phone number not available for this contact.", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this, "Error: Unable to determine the contact for the call.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun filterContacts(query: String?) {

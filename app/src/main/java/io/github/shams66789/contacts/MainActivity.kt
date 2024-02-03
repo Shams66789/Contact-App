@@ -1,13 +1,18 @@
 package io.github.shams66789.contacts
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -19,7 +24,7 @@ import io.github.shams66789.contacts.databinding.ActivityMainBinding
 import io.github.shams66789.contacts.mvvmarch.MainActivityViewModel
 import io.github.shams66789.contacts.roomdb.entity.Contact
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PermissionCallback {
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -28,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     var viewModel: MainActivityViewModel? = null
     var contactList = ArrayList<Contact>()
     lateinit var adapter : ContactAdapter
+    private var positionOfPermissionRequest: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         }).attachToRecyclerView(binding.rv)
 
         binding.rv.layoutManager = LinearLayoutManager(this)
-        adapter = ContactAdapter(contactList, this)
+        adapter = ContactAdapter(contactList, this, this)
         binding.rv.adapter = adapter
 
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
@@ -126,6 +132,58 @@ class MainActivity : AppCompatActivity() {
         } else {
             binding.emptyImg.visibility = View.GONE
             binding.rv.visibility = View.VISIBLE
+        }
+    }
+
+    override fun isCallPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.CALL_PHONE
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    override fun requestCallPermission(position: Int) {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.CALL_PHONE),
+            CALL_PERMISSION_REQUEST_CODE
+        )
+        positionOfPermissionRequest = position
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == CALL_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (positionOfPermissionRequest == -1) {
+                    makePhoneCall()
+                }else {
+                    makePhoneCall()
+                }
+            } else {
+                Toast.makeText(this, "Permission denied. You can grant the permission in the app settings.",
+                    Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun makePhoneCall() {
+        if (positionOfPermissionRequest != -1) {
+            val contact = contactList[positionOfPermissionRequest]
+            val phoneNo = contact.phoneNo
+            if (!phoneNo.isNullOrBlank()) {
+                val intent = Intent(Intent.ACTION_CALL)
+                intent.data = Uri.parse("tel:$phoneNo")
+                this.startActivity(intent)
+            } else {
+                Toast.makeText(this, "Phone number not available for this contact.", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this, "Error: Unable to determine the contact for the call.", Toast.LENGTH_SHORT).show()
         }
     }
 }
