@@ -1,10 +1,8 @@
 package io.github.shams66789.contacts
 
-import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
@@ -13,9 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.github.shams66789.contacts.databinding.ContactItemsBinding
 import io.github.shams66789.contacts.roomdb.entity.Contact

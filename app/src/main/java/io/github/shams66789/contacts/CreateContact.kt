@@ -2,24 +2,19 @@ package io.github.shams66789.contacts
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.github.dhaval2404.imagepicker.ImagePicker
 import io.github.shams66789.contacts.databinding.ActivityCreateContactBinding
 import io.github.shams66789.contacts.mvvmarch.CreateContactViewModel
-import io.github.shams66789.contacts.roomdb.DbBuilder
 import io.github.shams66789.contacts.roomdb.entity.Contact
 
 class CreateContact : AppCompatActivity() {
