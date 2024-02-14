@@ -13,7 +13,7 @@ Welcome to the Contact App repository! This Android application is designed to h
 
 Here are some screenshots of the Shayari App:
 
-<img src="Screenshots/Contact_empty.jpg" alt="Screenshot 1" width="200"/> <img src="Screenshots/create_contact.jpg" alt="Screenshot 2" width="200"/> <img src="Screenshots/Contact_home.jpg" alt="Screenshot 3" width="200"/>  <img src="Screenshots/dialpad.jpgg" alt="Screenshot 4" width="200"/>
+<img src="Screenshots/Contact_empty.jpg" alt="Screenshot 1" width="200"/> <img src="Screenshots/create_contact.jpg" alt="Screenshot 2" width="200"/> <img src="Screenshots/Contact_home.jpg" alt="Screenshot 3" width="200"/> <img src="Screenshots/dialpad.jpg" alt="Screenshot 4" width="200"/>
 
 ## Download
 
